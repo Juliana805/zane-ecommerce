@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zane — Shopping Cart</title>
+  <link rel="icon" href="zane-plain logo.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: #f9f9f9; color: #333; line-height: 1.6; }
+
+    header {
+      background: linear-gradient(90deg,#FADADD,#FFD700);
+      color: #4B0082;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .cart-container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 2rem auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    .cart-items {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .item-details {
+      flex: 2;
+      margin-left: 15px;
+    }
+    .item-details h4 { margin-bottom: 5px; font-size: 1rem; color: #4B0082; }
+    .item-details p { font-size: 0.9rem; color: #555; }
+
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .item-actions input {
+      width: 50px;
+      padding: 5px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .remove-btn {
+      color: red;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .cart-summary {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      height: fit-content;
+    }
+    .cart-summary h3 { margin-bottom: 15px; color: #4B0082; }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+    .summary-item.total {
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #4B0082;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-top: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+     /* text-decoration: none;*/
+    }
+    .checkout-btn:hover { background: #360061; }
+
+    @media(max-width: 900px) {
+      .cart-container { grid-template-columns: 1fr; }
+      .cart-item { flex-direction: column; align-items: flex-start; }
+      .item-actions { margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>My Cart</header>
+
+  <div class="cart-container">
+    <!-- Cart Items -->
+    <div class="cart-items">
+      <div class="cart-item">
+        <img src="https://via.placeholder.com/80" alt="Product Image">
+        <div class="item-details">
+          <h4>Wireless Headphones</h4>
+          <p>$50.00</p>
+        </div>
+        <div class="item-actions">
+          <input type="number" value="1" min="1">
+          <i class="fas fa-trash remove-btn"></i>
+        </div>
+      </div>
+
+      <div class="cart-item">
+        <img src="https://via.placeholder.com/80" alt="Product Image">
+        <div class="item-details">
+          <h4>Smartphone Case</h4>
+          <p>$15.00</p>
+        </div>
+        <div class="item-actions">
+          <input type="number" value="2" min="1">
+          <i class="fas fa-trash remove-btn"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Summary -->
+    <div class="cart-summary">
+      <h3>Order Summary</h3>
+      <div class="summary-item"><span>Items:</span><span>3</span></div>
+      <div class="summary-item"><span>Subtotal:</span><span>$80.00</span></div>
+      <div class="summary-item total"><span>Total:</span><span>$80.00</span></div>
+      <button class="checkout-btn"><a href="checkout.html">Poceed to Checkout</a></button>
+    </div>
+  </div>
+</body>
+</html>

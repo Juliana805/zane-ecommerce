@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product Details - Zane</title> 
+<link rel="icon" href="zane-plain logo.png">
+  <style>
+    body{font-family:Poppins,system-ui;margin:0;background:#fff;color:#111;padding:20px}
+    .layout{display:flex;gap:20px;flex-wrap:wrap}
+    .media{flex:1;min-width:320px}
+    .media img, .media video{width:100%;border-radius:10px;background:#f2f2f2}
+    .thumbs{display:flex;gap:8px;margin-top:8px;overflow-x:auto}
+    .thumbs img, .thumbs video{width:80px;height:80px;object-fit:cover;border-radius:8px;cursor:pointer}
+    .info{flex:1;min-width:280px}
+    .price{color:#FFD700;font-weight:700;font-size:1.5rem}
+    .options label{display:block;margin-top:10px;font-weight:600}
+    .btn{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+    .btn.cart{background:#4B0082;color:#fff}
+    .btn.order{background:#FFD700;color:#4B0082;font-weight:700}
+  </style>
+</head>
+<body>
+  <button onclick="goBack()">⟵ Back</button>
+  <div id="content"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+  <script>
+  const firebaseConfig = {
+    apiKey: "FIREBASE_API_KEY",
+    authDomain: "FIREBASE_AUTH_DOMAIN",
+    projectId: "FIREBASE_PROJECT_ID",
+    storageBucket: "FIREBASE_STORAGE_BUCKET",
+    messagingSenderId: "FIREBASE_MSG_SENDER_ID",
+    appId: "FIREBASE_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+
+  async function loadProduct() {
+    if (!id) return document.getElementById('content').innerHTML = '<p>Product not specified</p>';
+    const snap = await db.collection('products').doc(id).get();
+    if (!snap.exists) return document.getElementById('content').innerHTML = '<p>Product not found</p>';
+    const p = { id: snap.id, ...snap.data() };
+
+    // increment views
+    db.collection('products').doc(id).update({ views: (p.views||0) + 1 }).catch(()=>{});
+
+    // build html
+    const media = p.media && p.media.length ? p.media : (p.image ? [{ url: p.image, type: 'image/*' }] : []);
+    const mainMedia = media[0] ? (media[0].type && media[0].type.startsWith('video') ? `<video id="mainVid" controls src="${media[0].url}"></video>` : `<img id="mainImg" src="${media[0].url}">`) : '';
+    const thumbs = media.map((m, i) => (m.type && m.type.startsWith('video') ? `<video data-index="${i}" src="${m.url}"></video>` : `<img data-index="${i}" src="${m.url}">`)).join('');
+
+    document.getElementById('content').innerHTML = `
+      <div class="layout">
+        <div class="media">
+          <div id="mainMedia">${mainMedia}</div>
+          <div class="thumbs" id="thumbs">${thumbs}</div>
+        </div>
+        <div class="info">
+          <h2>${p.name}</h2>
+          <div class="price">$${p.price}</div>
+          <p>${p.description || ''}</p>
+
+          <div class="options">
+            <label>Size</label>
+            <select id="sizeSelect">${(p.sizes||[]).map(s => `<option>${s}</option>`).join('')}</select>
+
+            <label>Color</label>
+            <select id="colorSelect">${(p.colors||[]).map(c => `<option>${c}</option>`).join('')}</select>
+
+            <label>Quantity</label>
+            <input id="qty" type="number" min="1" value="1" style="width:80px;padding:8px;border-radius:6px;border:1px solid #ddd">
+
+            <div style="margin-top:12px;display:flex;gap:10px">
+              <button class="btn cart" id="addCart">Add to Cart</button>
+              <button class="btn order" id="orderNow">Order</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // thumb click -> set main media
+    document.querySelectorAll('#thumbs [data-index]').forEach(el => el.addEventListener('click', () => {
+      const i = el.getAttribute('data-index');
+      const m = media[i];
+      const main = document.getElementById('mainMedia');
+      if (m.type && m.type.startsWith('video')) main.innerHTML = `<video controls src="${m.url}"></video>`;
+      else main.innerHTML = `<img src="${m.url}">`;
+    }));
+
+    // add to cart (localStorage demo)
+    document.getElementById('addCart').addEventListener('click', ()=>{
+      const qty = parseInt(document.getElementById('qty').value) || 1;
+      const size = document.getElementById('sizeSelect') ? document.getElementById('sizeSelect').value : '';
+      const color = document.getElementById('colorSelect') ? document.getElementById('colorSelect').value : '';
+      const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+      cart.push({ productId: p.id, name: p.name, price: p.price, qty, size, color, image: media[0] ? media[0].url : '' });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert('Added to cart');
+    });
+
+    // order now (demo) - save to orders collection (guest demo)
+    document.getElementById('orderNow').addEventListener('click', async ()=>{
+      const buyerName = prompt('Your name:') || 'Guest';
+      const phone = prompt('Phone number:') || '';
+      const address = prompt('Delivery address:') || '';
+      if (!phone || !address) return alert('Phone and address required to order');
+      const order = {
+        buyerName, phone, address,
+        items: [{ id: p.id, name: p.name, qty: 1, price: p.price }],
+        total: p.price,
+        status: 'pending',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      try {
+        await db.collection('orders').add(order);
+        alert('Order placed — we will contact you');
+      } catch(err) {
+        alert('Order failed: ' + err.message);
+      }
+    });
+  }
+
+  function goBack(){ history.back(); }
+  loadProduct();
+  </script>
+</body>
+</html>

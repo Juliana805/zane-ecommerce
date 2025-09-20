@@ -1,0 +1,485 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zane — Admin Dashboard</title>
+  <link rel="icon" href="zane-plain logo.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Minimal polished styles */
+    :root{--brand:#4B0082;--accent:#FFD700}
+    *{box-sizing:border-box;font-family:Poppins,system-ui,Segoe UI,Roboto,Arial;margin:0}
+    body{background:#f5f5f7;color:#111}
+    .wrap{display:flex;min-height:100vh}
+    .sidebar{width:260px;background:var(--brand);color:#fff;padding:24px;display:flex;flex-direction:column;gap:12px}
+    .sidebar h2{color:var(--accent);text-align:center;margin-bottom:8px}
+    .sidebar a{color:#fff;text-decoration:none;padding:10px;border-radius:8px;display:block}
+    .sidebar a.active, .sidebar a:hover{background:var(--accent);color:var(--brand)}
+    .main{flex:1;padding:20px;margin-left:0}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .card-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:18px}
+    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.06);text-align:center}
+    .card h3{color:var(--brand);margin-bottom:8px}
+    .panel{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.06);margin-bottom:18px}
+    form .row{display:flex;gap:8px;flex-wrap:wrap}
+    input[type=text],input[type=number],select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd}
+    label{font-weight:600;color:var(--brand);margin-bottom:6px;display:block}
+    .btn{padding:10px 14px;border-radius:8px;border:none;background:var(--accent);color:var(--brand);font-weight:700;cursor:pointer}
+    .btn.danger{background:#ff6b6b;color:#fff}
+    .small{font-size:.9rem;color:#666}
+    .product-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .product-card{padding:12px;background:#fff;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.05)}
+    .product-card img{width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+    .media-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .media-preview img, .media-preview video{width:80px;height:80px;object-fit:cover;border-radius:8px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+    @media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:12px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <aside class="sidebar">
+      <h2>Zane Admin</h2>
+      <a href="#dashboard" class="active">Dashboard</a>
+      <a href="#upload">Upload Product</a>
+      <a href="#orders">Orders</a>
+      <a href="#" id="logoutBtn">Logout</a>
+      <div class="small" style="margin-top:auto">Signed in as <span id="adminEmail" class="small"></span></div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h1>Admin Dashboard</h1>
+        <div id="authArea">
+          <!-- login form will be shown here if not signed in -->
+        </div>
+      </div>
+
+      <section id="dashboardSection" class="panel">
+        <div class="card-row">
+          <div class="card"><h3>Total Products</h3><div id="totalProducts">0</div></div>
+          <div class="card"><h3>Total Orders</h3><div id="totalOrders">0</div></div>
+          <div class="card"><h3>Pending</h3><div id="pendingOrders">0</div></div>
+          <div class="card"><h3>Completed</h3><div id="completedOrders">0</div></div>
+        </div>
+      </section>
+
+      <section id="uploadSection" class="panel">
+        <h2>Upload / Edit Product</h2>
+        <form id="productForm">
+          <input type="hidden" id="productId">
+          <div class="row">
+            <div style="flex:1">
+              <label>Product Name</label>
+              <input id="productName" type="text" required>
+            </div>
+            <div style="width:160px">
+              <label>Price ($)</label>
+              <input id="productPrice" type="number" step="0.01" required>
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <label>Category</label>
+            <select id="productCategory" required>
+              <option value="">Select category</option>
+              <option value="fashion">Fashion</option>
+              <option value="footwear">Foot Wear</option>
+              <option value="appliances">Home Appliances</option>
+              <option value="phones">Phones & Accessories</option>
+              <option value="beauty">Beauty & Health</option>
+              <option value="electronics">Electronics</option>
+              <option value="decor">Home Décor</option>
+              <option value="new-arrival">New Arrivals</option>
+              <option value="top-ranking">Top Ranking</option>
+              <option value="hot-selling">Hot Selling</option>
+            </select>
+          </div>
+
+          <div style="margin-top:10px">
+            <label>Description</label>
+            <textarea id="productDescription" rows="3"></textarea>
+          </div>
+
+          <div style="margin-top:10px" class="row">
+            <div style="flex:1">
+              <label>Sizes (comma separated)</label>
+              <input id="productSizes" type="text" placeholder="S, M, L">
+            </div>
+            <div style="flex:1">
+              <label>Colors (comma separated)</label>
+              <input id="productColors" type="text" placeholder="Red, Blue">
+            </div>
+            <div style="width:160px">
+              <label>Stock</label>
+              <input id="productStock" type="number" min="0" required>
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <label>Media (images/videos) — you can select multiple (7-10)</label>
+            <input id="productMedia" type="file" accept="image/*,video/*" multiple>
+            <div class="media-preview" id="mediaPreview"></div>
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn" id="saveProductBtn">Save product</button>
+            <button type="button" class="btn danger" id="clearForm">Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="productsListSection" class="panel">
+        <h2>All Products</h2>
+        <div id="productsGrid" class="product-row"></div>
+      </section>
+
+      <section id="ordersSection" class="panel">
+        <h2>Orders</h2>
+        <table>
+          <thead><tr><th>Buyer</th><th>Phone</th><th>Address</th><th>Products</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="ordersTable"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
+  <script>
+  /*******************************
+   *  Replace this firebaseConfig with your project's config
+   *  (from Firebase Console > Project settings > SDK config)
+   *******************************/
+  const firebaseConfig = {
+    apiKey: "FIREBASE_API_KEY",
+    authDomain: "FIREBASE_AUTH_DOMAIN",
+    projectId: "FIREBASE_PROJECT_ID",
+    storageBucket: "FIREBASE_STORAGE_BUCKET",
+    messagingSenderId: "FIREBASE_MSG_SENDER_ID",
+    appId: "FIREBASE_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  // Replace with your admin email (or manage admin list in Firestore)
+  const ADMIN_EMAIL = "you@yourdomain.com";
+
+  // UI refs
+  const authArea = document.getElementById('authArea');
+  const adminEmailEl = document.getElementById('adminEmail');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  const productForm = document.getElementById('productForm');
+  const productIdInput = document.getElementById('productId');
+  const productName = document.getElementById('productName');
+  const productPrice = document.getElementById('productPrice');
+  const productCategory = document.getElementById('productCategory');
+  const productDescription = document.getElementById('productDescription');
+  const productSizes = document.getElementById('productSizes');
+  const productColors = document.getElementById('productColors');
+  const productStock = document.getElementById('productStock');
+  const productMedia = document.getElementById('productMedia');
+  const mediaPreview = document.getElementById('mediaPreview');
+  const productsGrid = document.getElementById('productsGrid');
+  const totalProducts = document.getElementById('totalProducts');
+  const totalOrders = document.getElementById('totalOrders');
+  const pendingOrders = document.getElementById('pendingOrders');
+  const completedOrders = document.getElementById('completedOrders');
+  const ordersTable = document.getElementById('ordersTable');
+  const clearFormBtn = document.getElementById('clearForm');
+
+  let currentUser = null;
+
+  // --- Simple login UI (email/password) ---
+  function showLogin() {
+    authArea.innerHTML = `
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="loginEmail" placeholder="admin email" style="padding:8px;border-radius:8px;border:1px solid #ddd">
+        <input id="loginPass" type="password" placeholder="password" style="padding:8px;border-radius:8px;border:1px solid #ddd">
+        <button class="btn" id="loginBtn">Sign in</button>
+      </div>
+    `;
+    document.getElementById('loginBtn').addEventListener('click', handleSignIn);
+  }
+
+  async function handleSignIn() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    try {
+      const credential = await auth.signInWithEmailAndPassword(email, pass);
+      // check admin
+      if (credential.user.email !== ADMIN_EMAIL) {
+        alert('This account is not authorized as admin. Change ADMIN_EMAIL in admin.html or use an admin account.');
+        await auth.signOut();
+        return;
+      }
+    } catch (err) {
+      alert('Sign in error: ' + err.message);
+    }
+  }
+
+  // Logout
+  logoutBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    await auth.signOut();
+  });
+
+  // Auth state
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      currentUser = user;
+      adminEmailEl.textContent = user.email;
+      authArea.innerHTML = `<div class="small">Signed in: ${user.email}</div>`;
+      // load data
+      subscribeProducts();
+      subscribeOrders();
+    } else {
+      currentUser = null;
+      adminEmailEl.textContent = 'not signed';
+      showLogin();
+      productsGrid.innerHTML = '<div class="small">Please sign in to manage products</div>';
+      ordersTable.innerHTML = '';
+      totalProducts.textContent = '0';
+    }
+  });
+
+  // --- PRODUCTS CRUD ---
+  // Subscribe to products collection to reactively update admin UI
+  function subscribeProducts(){
+    db.collection('products').orderBy('createdAt','desc').onSnapshot(snapshot => {
+      const items = [];
+      snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+      renderProducts(items);
+    }, err => console.error(err));
+  }
+
+  // Render products in admin panel
+  function renderProducts(items){
+    productsGrid.innerHTML = '';
+    totalProducts.textContent = items.length;
+    items.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'product-card';
+      div.innerHTML = `
+        <img src="${(p.media && p.media[0] && p.media[0].url) || p.image || ''}" alt="${p.name}">
+        <strong>${p.name}</strong>
+        <div class="small">${p.category || ''}</div>
+        <div style="margin:8px 0;font-weight:700;color:var(--brand)">$${p.price}</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="editProduct('${p.id}')">Edit</button>
+          <button class="btn danger" onclick="deleteProduct('${p.id}')">Delete</button>
+        </div>
+      `;
+      productsGrid.appendChild(div);
+    });
+  }
+
+  // Edit product: load into form
+  async function editProduct(id){
+    const doc = await db.collection('products').doc(id).get();
+    if (!doc.exists) return alert('Product not found');
+    const p = { id: doc.id, ...doc.data() };
+    productIdInput.value = p.id;
+    productName.value = p.name || '';
+    productPrice.value = p.price || '';
+    productCategory.value = p.category || '';
+    productDescription.value = p.description || '';
+    productSizes.value = (p.sizes || []).join(', ');
+    productColors.value = (p.colors || []).join(', ');
+    productStock.value = p.stock || 0;
+    // show existing media previews
+    mediaPreview.innerHTML = '';
+    (p.media || []).forEach(m => {
+      if (m.type && m.type.startsWith('video')) {
+        const v = document.createElement('video'); v.src = m.url; v.controls = true; v.width = 90; v.height = 90; mediaPreview.appendChild(v);
+      } else {
+        const img = document.createElement('img'); img.src = m.url; mediaPreview.appendChild(img);
+      }
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Delete product (doc + storage media)
+  async function deleteProduct(id){
+    if (!confirm('Delete this product? This cannot be undone.')) return;
+    try {
+      const docRef = db.collection('products').doc(id);
+      const snap = await docRef.get();
+      if (!snap.exists) return;
+      const data = snap.data();
+      // delete storage files
+      if (data.media && Array.isArray(data.media)) {
+        await Promise.all(data.media.map(async m => {
+          if (!m.path) return;
+          try { await storage.ref(m.path).delete(); } catch(e){ console.warn('Storage delete failed', e); }
+        }));
+      }
+      // delete doc
+      await docRef.delete();
+      alert('Product deleted');
+    } catch(err){ console.error(err); alert('Delete failed: ' + err.message); }
+  }
+
+  // Save product (create or update)
+  productForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentUser) return alert('Sign in first');
+    const id = productIdInput.value || null;
+    const name = productName.value.trim();
+    const price = parseFloat(productPrice.value) || 0;
+    const category = productCategory.value;
+    const description = productDescription.value.trim();
+    const sizes = productSizes.value.split(',').map(s => s.trim()).filter(Boolean);
+    const colors = productColors.value.split(',').map(c => c.trim()).filter(Boolean);
+    const stock = parseInt(productStock.value) || 0;
+    const files = Array.from(productMedia.files || []);
+    try {
+      let docRef;
+      if (id) {
+        docRef = db.collection('products').doc(id);
+        await docRef.update({ name, price, category, description, sizes, colors, stock, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      } else {
+        docRef = await db.collection('products').add({
+          name, price, category, description, sizes, colors, stock,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          views: 0
+        });
+      }
+
+      // If new files picked, upload them
+      if (files.length) {
+        const uploaded = [];
+        for (const file of files) {
+          const path = `products/${docRef.id}/${Date.now()}_${file.name}`;
+          const snap = await storage.ref(path).put(file);
+          const url = await snap.ref.getDownloadURL();
+          uploaded.push({ url, path, type: file.type });
+        }
+        // append media array to product doc
+        await docRef.update({
+          media: firebase.firestore.FieldValue.arrayUnion(...uploaded)
+        });
+      }
+
+      alert('Product saved');
+      productForm.reset();
+      mediaPreview.innerHTML = '';
+      productIdInput.value = '';
+    } catch (err) {
+      console.error(err); alert('Save failed: ' + err.message);
+    }
+  });
+
+  // preview selected files
+  productMedia.addEventListener('change', () => {
+    mediaPreview.innerHTML = '';
+    const files = Array.from(productMedia.files).slice(0, 10);
+    files.forEach(f => {
+      if (f.type.startsWith('video')) {
+        const v = document.createElement('video'); v.src = URL.createObjectURL(f); v.controls = true; v.width = 90; v.height = 90; mediaPreview.appendChild(v);
+      } else {
+        const img = document.createElement('img'); img.src = URL.createObjectURL(f); mediaPreview.appendChild(img);
+      }
+    });
+  });
+
+  clearFormBtn.addEventListener('click', () => {
+    productForm.reset(); mediaPreview.innerHTML = ''; productIdInput.value = '';
+  });
+
+  // --- ORDERS (listen & update) ---
+  function subscribeOrders(){
+    db.collection('orders').orderBy('createdAt','desc').onSnapshot(snapshot => {
+      const orders = [];
+      snapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+      renderOrders(orders);
+    }, err => console.error(err));
+  }
+
+  function renderOrders(orders){
+    totalOrders.textContent = orders.length;
+    pendingOrders.textContent = orders.filter(o => o.status === 'pending').length;
+    completedOrders.textContent = orders.filter(o => o.status === 'completed').length;
+
+    ordersTable.innerHTML = '';
+    orders.forEach(o => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${o.buyerName || '-'}</td>
+        <td>${o.phone || '-'}</td>
+        <td>${o.address || '-'}</td>
+        <td>${(o.items || []).map(it => it.name + ' x' + it.qty).join(', ')}</td>
+        <td>$${o.total || 0}</td>
+        <td>${o.status}</td>
+        <td>
+          <button class="btn" onclick="updateOrderStatus('${o.id}','shipped')">Mark Shipped</button>
+          <button class="btn" onclick="updateOrderStatus('${o.id}','completed')">Complete</button>
+        </td>
+      `;
+      ordersTable.appendChild(tr);
+    });
+  }
+
+  async function updateOrderStatus(orderId, status){
+    await db.collection('orders').doc(orderId).update({ status, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    alert('Order status updated');
+  }
+
+  // Expose update/delete functions to global scope for onclick handlers in generated HTML
+  window.editProduct = editProduct;
+  window.deleteProduct = deleteProduct;
+  window.updateOrderStatus = updateOrderStatus;
+
+  // Start: show login UI until authenticated
+  showLogin();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

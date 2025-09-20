@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zane — Contact Us</title>
+  <link rel="icon" href="zane-plain logo.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: #fff; color: #333; line-height: 1.6; }
+
+    header {
+      background: linear-gradient(90deg,#FADADD,#FFD700);
+      color: #4B0082;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .contact-container {
+      width: 90%;
+      max-width: 1100px;
+      margin: 2rem auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .contact-info {
+      padding: 20px;
+    }
+    .contact-info h2 { color: #4B0082; margin-bottom: 15px; }
+    .contact-info p { margin-bottom: 10px; font-size: 1rem; color: #555; }
+    .contact-info i { color: #4B0082; margin-right: 8px; }
+
+    .contact-form {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    .contact-form h2 { color: #4B0082; margin-bottom: 15px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; color: #333; }
+    .form-group input, 
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .form-group textarea { resize: vertical; height: 120px; }
+    .btn {
+      background: #4B0082;
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover { background: #360061; }
+
+    .map {
+      margin: 2rem auto;
+      width: 90%;
+      max-width: 1100px;
+      height: 350px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    .map iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    footer {
+      background: #4B0082;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      margin-top: 2rem;
+    }
+
+    @media(max-width: 900px) {
+      .contact-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>Contact Us</header>
+
+  <div class="contact-container">
+    <!-- Contact Info -->
+    <div class="contact-info">
+      <h2>Get in Touch</h2>
+      <p><i class="fas fa-phone"></i> +233 24 123 4567</p>
+      <p><i class="fas fa-envelope"></i> support@zane.com</p>
+      <p><i class="fas fa-map-marker-alt"></i> Accra, Ghana</p>
+      <p>We’d love to hear from you. Whether you have a question about products, orders, or anything else, our team is ready to answer all your questions.</p>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact-form">
+      <h2>Send Us a Message</h2>
+      <form action="#" method="post">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" placeholder="Enter your name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Your Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Your Message</label>
+          <textarea id="message" name="message" placeholder="Write your message" required></textarea>
+        </div>
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Google Map -->
+  <div class="map">
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31693.09104195313!2d-0.2058746842899345!3d5.603716344134591!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9b2f2d5d8b23%3A0x9c2b7a53de3a3a74!2sAccra!5e0!3m2!1sen!2sgh!4v1700000000000" 
+      allowfullscreen=""
+      loading="lazy">
+    </iframe>
+  </div>
+
+  <footer>
+    <p>© 2025 Zane. All Rights Reserved.</p>
+  </footer>
+</body>
+</html>

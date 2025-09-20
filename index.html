@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zane — Welcome</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: #fdfdfd; color: #333; }
+
+    header {
+      background: linear-gradient(90deg,#FADADD,#FFD700);
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #4B0082;
+      letter-spacing: 2px;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      overflow: hidden;
+      background: linear-gradient(120deg, #4B0082, #FFD700, #FADADD);
+      background-size: 200% 200%;
+      animation: gradientShift 8s infinite alternate;
+    }
+    @keyframes gradientShift {
+      0% { background-position: left; }
+      100% { background-position: right; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      animation: fadeIn 1.5s ease;
+    }
+    .hero-content h1 { font-size: 3.5rem; margin-bottom: 15px; }
+    .hero-content p { font-size: 1.2rem; margin-bottom: 25px; }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: rgba(255,255,255,0.15);
+      border: 2px solid #fff;
+      padding: 12px 30px;
+      border-radius: 30px;
+      font-size: 1rem;
+      color: #fff;
+      text-decoration: none;
+      backdrop-filter: blur(6px);
+      transition: 0.3s ease;
+    }
+    .btn:hover {
+      background: #FFD700;
+      color: #4B0082;
+      transform: scale(1.05);
+    }
+
+    
+
+/* Highlights Section */
+    .highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 50px 20px;
+      background: white;
+    }
+
+    .highlight-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .highlight-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    }
+
+    .highlight-card i {
+      font-size: 2rem;
+      color: #ff4757;
+      margin-bottom: 10px;
+    }
+
+    .highlight-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #222;
+      color: white;
+    }
+
+
+
+    /* About Section */
+    .about {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding: 60px 20px;
+      background: #fff;
+    }
+    .about-text { flex: 1; min-width: 280px; }
+    .about-text h2 { color: #4B0082; margin-bottom: 15px; font-size: 2rem; }
+    .about-text p { font-size: 1.1rem; line-height: 1.6; color: #555; }
+    .about-img { flex: 1; min-width: 280px; text-align: center; }
+    .about-img img { max-width: 100%; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #4B0082;
+      color: #fff;
+      margin-top: 30px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media(max-width: 768px) {
+      .hero-content h1 { font-size: 2.3rem; }
+      .hero-content p { font-size: 1rem; }
+      .floating-img { display: none; } /* hide floating posters on small screens */
+    }
+  </style>
+</head>
+<body>
+
+  <header>✨ Welcome to Zane ✨</header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Shop Smarter, Live Better</h1>
+      <p>Discover premium fashion, electronics & more — only at Zane</p>
+      <div class="buttons">
+        <a href="login.html" class="btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="signup.html" class="btn"><i class="fas fa-user-plus"></i> Signup</a>
+      </div>
+    </div>
+    
+  </section>
+
+
+
+<!-- Highlights Section -->
+  <section class="highlights">
+    <div class="highlight-card">
+      <i class="fas fa-tags"></i>
+      <h3>Best Deals</h3>
+      <p>Exclusive discounts and offers just for you.</p>
+    </div>
+    <div class="highlight-card">
+      <i class="fas fa-shipping-fast"></i>
+      <h3>Fast Delivery</h3>
+      <p>Get your orders delivered to your doorstep quickly.</p>
+    </div>
+    <div class="highlight-card">
+      <i class="fas fa-check-circle"></i>
+      <h3>Quality Products</h3>
+      <p>We bring you only the best and verified items.</p>
+    </div>
+    <div class="highlight-card">
+      <i class="fas fa-headset"></i>
+      <h3>24/7 Support</h3>
+      <p>Always here to help with your shopping needs.</p>
+    </div>
+  </section>
+
+
+
+
+
+
+  <!-- About -->
+  <section class="about">
+    <div class="about-text">
+      <h2>About Zane</h2>
+      <p>
+        Zane is your one-stop e-commerce destination, bringing you the finest collections from around the world. 
+        From luxury fashion to top tech gadgets, we provide only the best at unbeatable prices. 
+        Sign up today and enjoy a smarter shopping experience with us.
+      </p>
+    </div>
+    <div class="about-img">
+      <img src="bag.png" alt="Shopping Experience">
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Zane. All rights reserved.
+  </footer>
+
+</body>
+</html>
